@@ -1,0 +1,78 @@
+﻿@model IEnumerable<MVCCodigoCapas2024.Models.CategoryModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<input type="text" name="name" id="nameTxt" value="" />
+<button id="filterButton" >Buscar</button>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        loadCategories();
+        $('#filterButton').click(function () {
+            loadCategories();
+
+        });
+
+
+        function loadCategories(){
+            var name = $("#nameTxt").val();
+            $.ajax({
+                type: "GET",
+                url: "/Categories/GetFilterCategories",
+                data: {
+                    name: name
+                },
+                success: function (categories) {
+                    console.log(categories);
+
+                    var tableBody = $('table tbody');
+                    tableBody.empty(); // Vaciar la tabla
+
+                    categories.forEach(function (category) {
+                        var newRow = `
+                                        <tr>
+                                                        <td>${category.id}</td>
+                                                        <td>${category.name}</td>
+                                                            <td>${category.description}</td>
+                                        </tr>`;
+                        tableBody.append(newRow);
+                    });
+
+                },
+                error: function () {
+                    alert('Hubo un error al listar los alimentos.');
+                }
+            });
+        }
+
+    });
+
+</script>
